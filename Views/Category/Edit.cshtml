@@ -1,0 +1,18 @@
+﻿@model MVC_CRUD.Models.Category
+
+<h2>Edit Category</h2>
+
+<form method="post">
+    @Html.HiddenFor(model => model.CategoryId) 
+
+    <div class="form-group">
+        <label for="CategoryName">Category Name</label>
+        <input type="text" class="form-control" id="CategoryName" name="CategoryName" value="@Model.CategoryName" />
+        @Html.EditorFor(model => model.CategoryName, new { htmlAttributes = new { @class = "form-control" } })
+        @if (ViewData.ModelState["CategoryName"]?.Errors.Count() > 0)
+        {
+            <div class="text-danger">@ViewData.ModelState["CategoryName"].Errors[0].ErrorMessage</div>
+        }
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>

@@ -1,0 +1,26 @@
+﻿
+
+
+@model MVC_CRUD.Models.Product
+
+<h2>Create Product</h2>
+
+<form asp-action="Create">
+    <div class="form-group">
+        <label for="CategoryId">Category</label>
+        <select asp-for="CategoryId" class="form-control" asp-items="@(new SelectList(ViewData["CategoryId"] as List<MVC_CRUD.Models.Category>, "CategoryId", "CategoryName"))">
+            <option value="">Select a category</option>
+        </select>
+        <span asp-validation-for="CategoryId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="ProductName">Product Name</label>
+        <input asp-for="ProductName" class="form-control" />
+        <span asp-validation-for="ProductName" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
+
+@Html.ValidationSummary(true)

@@ -1,0 +1,16 @@
+﻿
+
+ @model MVC_CRUD.Models.Category
+
+@{
+    ViewData["Title"] = "Delete Category";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<h3>Are you sure you want to delete the category "@Model.CategoryName"?</h3>
+
+<form method="post">
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a href="@Url.Action("Index")" class="btn btn-secondary">Cancel</a>
+</form>
