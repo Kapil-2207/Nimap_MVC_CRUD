@@ -18,7 +18,7 @@ namespace MVC_CRUD.Migrations
                 .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("MVC_CRUD.Models.Category", b =>
+            modelBuilder.Entity("MVC_CRUD.Category", b =>
                 {
                     b.Property<int>("CategoryId")
                         .ValueGeneratedOnAdd()
@@ -26,15 +26,14 @@ namespace MVC_CRUD.Migrations
 
                     b.Property<string>("CategoryName")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("CategoryId");
 
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("MVC_CRUD.Models.Product", b =>
+            modelBuilder.Entity("MVC_CRUD.Product", b =>
                 {
                     b.Property<int>("ProductId")
                         .ValueGeneratedOnAdd()
@@ -45,8 +44,7 @@ namespace MVC_CRUD.Migrations
 
                     b.Property<string>("ProductName")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("ProductId");
 
@@ -55,20 +53,15 @@ namespace MVC_CRUD.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("MVC_CRUD.Models.Product", b =>
+            modelBuilder.Entity("MVC_CRUD.Product", b =>
                 {
-                    b.HasOne("MVC_CRUD.Models.Category", "Category")
-                        .WithMany("Products")
+                    b.HasOne("MVC_CRUD.Category", "Category")
+                        .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("MVC_CRUD.Models.Category", b =>
-                {
-                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

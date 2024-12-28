@@ -1,13 +1,22 @@
-﻿
- @model MVC_CRUD.Models.Category
+﻿@model MVC_CRUD.Product
 
-<h2>Are you sure you want to delete this category?</h2>
+@{
+    ViewData["Title"] = "Delete Product";
+}
 
-<div>
-    <h3>@Model.CategoryName</h3>
-    <form asp-action="DeleteConfirmed" method="post">
-        <input type="hidden" asp-for="CategoryId" />
-        <button type="submit" class="btn btn-danger">Delete</button>
-        <a href="@Url.Action("Index")" class="btn btn-secondary">Cancel</a>
-    </form>
+<h2>Delete Product</h2>
+
+<p>Are you sure you want to delete this product?</p>
+
+<div class="border p-3 mb-3">
+    <p><strong>Product ID:</strong> @Model.ProductId</p>
+    <p><strong>Product Name:</strong> @Model.ProductName</p>
+    <p><strong>Category ID:</strong> @Model.CategoryId</p>
+    <p><strong>Category Name:</strong> @Model.Category?.CategoryName</p>
 </div>
+
+<form method="post" action="@Url.Action("Delete", "Product", new { id = Model.ProductId })">
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a class="btn btn-secondary" href="@Url.Action("Index", "Product")">Cancel</a>
+</form>

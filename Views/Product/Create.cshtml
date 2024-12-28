@@ -1,26 +1,23 @@
-﻿
+﻿@model MVC_CRUD.Product
+@{
+    ViewData["Title"] = "Add New Product";
+}
+<h2>Add New Product</h2>
 
-
-@model MVC_CRUD.Models.Product
-
-<h2>Create Product</h2>
-
-<form asp-action="Create">
-    <div class="form-group">
-        <label for="CategoryId">Category</label>
-        <select asp-for="CategoryId" class="form-control" asp-items="@(new SelectList(ViewData["CategoryId"] as List<MVC_CRUD.Models.Category>, "CategoryId", "CategoryName"))">
-            <option value="">Select a category</option>
+<form method="post" action="/Product/Create">
+    <div class="mb-3">
+        <label for="ProductName" class="form-label">Product Name</label>
+        <input type="text" class="form-control" id="ProductName" name="ProductName" required />
+    </div>
+    <div class="mb-3">
+        <label for="CategoryId" class="form-label">Category</label>
+        <select class="form-select" id="CategoryId" name="CategoryId" required>
+            @foreach (var category in ViewBag.Categories as IEnumerable<MVC_CRUD.Category>)
+            {
+            <option value="@category.CategoryId">@category.CategoryName</option>
+            }
         </select>
-        <span asp-validation-for="CategoryId" class="text-danger"></span>
     </div>
-
-    <div class="form-group">
-        <label for="ProductName">Product Name</label>
-        <input asp-for="ProductName" class="form-control" />
-        <span asp-validation-for="ProductName" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Create</button>
+    <button type="submit" class="btn btn-success">Submit</button>
+    <a class="btn btn-secondary" href="/Product">Cancel</a>
 </form>
-
-@Html.ValidationSummary(true)

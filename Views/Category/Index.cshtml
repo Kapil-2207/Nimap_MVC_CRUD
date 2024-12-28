@@ -1,35 +1,57 @@
-﻿@model IEnumerable<MVC_CRUD.Models.Category>
+﻿@model IEnumerable<MVC_CRUD.Category>
 
-@{
-    ViewData["Title"] = "Category Index";
-}
+    @{
+    ViewData["Title"] = "Categories";
+    }
 
-<h2>Category Index</h2>
+    <h2>Categories</h2>
 
-<p>
-    <a href="@Url.Action("Create", "Category")" class="btn btn-primary">Create New Category</a>
-</p>
+    <a class="btn btn-primary mb-3" href="/Category/Create">Add New Category</a>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>CategoryId</th>
-            <th>Category Name</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var category in Model)
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Category ID</th>
+                <th>Category Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var category in Model)
         {
             <tr>
                 <td>@category.CategoryId</td>
                 <td>@category.CategoryName</td>
                 <td>
-                    <a href="@Url.Action("Edit", "Category", new { id = category.CategoryId })" class="btn btn-warning">Edit</a> |
-                    <a href="@Url.Action("Delete", "Category", new { id = category.CategoryId })" class="btn btn-danger">Delete</a>
+                    <a class="btn btn-warning" href="/Category/Edit/@category.CategoryId">Edit</a>
+                    <a class="btn btn-danger" href="/Category/Delete/@category.CategoryId">Delete</a>
                 </td>
             </tr>
         }
-    </tbody>
-</table>
+        </tbody>
+    </table>
 
+    <nav aria-label="Category pagination">
+        <ul class="pagination justify-content-center">
+            @if (ViewBag.CurrentPage > 1)
+        {
+            <li class="page-item">
+                <a class="page-link" href="?page=@(ViewBag.CurrentPage - 1)">Previous</a>
+            </li>
+        }
+
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+        {
+            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                <a class="page-link" href="?page=@i">@i</a>
+            </li>
+        }
+
+            @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+        {
+            <li class="page-item">
+                <a class="page-link" href="?page=@(ViewBag.CurrentPage + 1)">Next</a>
+            </li>
+        }
+        </ul>
+    </nav>

@@ -1,94 +1,90 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MVC_CRUD.Data;
-using MVC_CRUD.Models;
-using System.Linq;
 
-namespace MVC_CRUD.Controllers
+namespace MVC_CRUD
 {
     public class ProductController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ProductService _service;
 
-        public ProductController(ApplicationDbContext context)
+        public ProductController(ProductService service)
         {
-            _context = context;
+            _service = service;
         }
 
-        public IActionResult Index()
+        // GET: Product/Index
+        public IActionResult Index(int page = 1, int pageSize = 10)
         {
-            var products = _context.Products.Include(p => p.Category).ToList();  // Eagerly load the related Category
+            var products = _service.GetAllProducts(page, pageSize);
+            ViewBag.TotalPages = (int)Math.Ceiling((double)_service.GetProductCount() / pageSize);
+            ViewBag.CurrentPage = page;
+
+            ViewBag.Message = TempData["Message"];
             return View(products);
         }
 
         // GET: Product/Create
         public IActionResult Create()
         {
-            ViewData["CategoryId"] = _context.Categories.ToList(); // Populate categories for the dropdown
+            ViewBag.Categories = _service.GetCategories();
             return View();
         }
 
         // POST: Product/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult Create(Product product)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Products.Add(product); // Add the product to the database
-                _context.SaveChanges(); // Save the changes
-                return RedirectToAction(nameof(Index)); // Redirect to the product list page
-            }
-            ViewData["CategoryId"] = _context.Categories.ToList(); // Re-populate categories if validation fails
-            return View(product); // If validation fails, return the same view with errors
+            var result = _service.AddProduct(product);
+            TempData["Message"] = result; 
+            return RedirectToAction(nameof(Index)); 
         }
 
         // GET: Product/Edit/5
         public IActionResult Edit(int id)
         {
-            var product = _context.Products.FirstOrDefault(p => p.ProductId == id);
+            var product = _service.GetProductById(id);
             if (product == null)
             {
                 return NotFound();
             }
-
-            ViewData["CategoryId"] = _context.Categories.ToList(); // Populate categories for the dropdown
+            ViewBag.Categories = _service.GetCategories();
             return View(product);
         }
 
         // POST: Product/Edit/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Product product)
+        public IActionResult Edit(Product product)
         {
-            if (id != product.ProductId)
+            var result = _service.UpdateProduct(product);
+            TempData["Message"] = result; 
+            return RedirectToAction(nameof(Index)); 
+        }
+
+        // GET: Product/Delete/5
+        public IActionResult Delete(int id)
+        {
+            var product = _service.GetProductById(id);
+            if (product == null)
             {
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Products.Update(product); // Update the product in the database
-                    _context.SaveChanges(); // Save the changes
-                    return RedirectToAction(nameof(Index)); // Redirect to the product list page
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!_context.Products.Any(p => p.ProductId == id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-            }
-            ViewData["CategoryId"] = _context.Categories.ToList(); // Re-populate categories if validation fails
             return View(product);
+        }
+
+        // POST: Product/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirmed(int id)
+        {
+            _service.DeleteProduct(id);
+            return RedirectToAction(nameof(Index));
+        }
+
+        // Cancel button action
+        public IActionResult Cancel()
+        {
+            return RedirectToAction(nameof(Index));
         }
     }
 }
